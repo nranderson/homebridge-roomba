@@ -232,6 +232,12 @@
                             "title": "Idle Poll Interval (minutes)",
                             "description": "How often to poll Roomba's status when it is idle. Defaults to 15 minutes.",
                             "required": false
+                        },
+                        "externalAccessory": {
+                            "type": "boolean",
+                            "title": "Publish as External Accessory",
+                            "description": "Publish this Roomba as an external accessory (independent HomeKit bridge) rather than part of the main Homebridge bridge. Overrides the global setting for this device.",
+                            "required": false
                         }
                     }
                 }
@@ -242,9 +248,21 @@
                 "description": "How often to poll Roomba's status when it is idle. Defaults to 15 minutes.",
                 "required": false
             },
+            "externalAccessory": {
+                "type": "boolean",
+                "title": "Publish as External Accessory",
+                "description": "Publish all Roomba devices as external accessories (independent HomeKit bridges) rather than part of the main Homebridge bridge. Can be overridden per device.",
+                "required": false
+            },
             "debug": {
                 "type": "boolean",
                 "title": "Debug logging",
+                "required": false
+            },
+            "enableMatter": {
+                "type": "boolean",
+                "title": "Enable Matter Support",
+                "description": "Enable Homebridge Matter support when running on Homebridge v2 with Matter enabled. If Matter is unavailable or fails to initialize, the plugin automatically falls back to HAP (HomeKit Accessory Protocol). Defaults to enabled.",
                 "required": false
             }
         }
@@ -294,6 +312,10 @@
                         "devices[].idleWatchInterval",
                         "devices[].cleanBehaviour",
                         {
+                            "key": "devices[].externalAccessory",
+                            "description": "Publish this device as an external accessory (independent HomeKit bridge)."
+                        },
+                        {
                             "key": "devices[].mission",
                             "type": "fieldset",
                             "title": "Mission Settings",
@@ -324,7 +346,9 @@
             "items": [
                 "idleWatchInterval",
                 "disableDiscovery",
-                "debug"
+                "externalAccessory",
+                "debug",
+                "enableMatter"
             ]
         }
     ]

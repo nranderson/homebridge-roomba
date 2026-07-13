@@ -1,9 +1,40 @@
-import type { API } from 'homebridge'
+import type { API, PlatformConfig } from 'homebridge'
 
-import RoombaPlatform from './platform.js'
-import { PLATFORM_NAME } from './settings.js'
+import RoombaPlatform from './Platform.HAP.js'
+import RoombaMatterPlatform from './Platform.Matter.js'
+import { PLATFORM_NAME, PLUGIN_NAME } from './settings.js'
+
+/**
+ * Creates a proxy constructor that instantiates the correct platform
+ * implementation — Matter or HAP — depending on runtime availability
+ * and the user's configuration.
+ *
+ * - If `enableMatter` is `false` in the config, HAP is always used.
+ * - If Matter is available and enabled on the Homebridge host, the Matter
+ *   platform is used; otherwise the HAP platform is used.
+ * - If Matter platform initialization throws, HAP is used as a fallback.
+ */
+export function createPlatformProxy(HAPPlatform: any, MatterPlatform: any): any {
+  return class RoombaPlatformProxy {
+    constructor(log: any, config: PlatformConfig, api: any) {
+      const enableMatter = config.enableMatter !== false
+      const matterAvailable = !!(api?.isMatterAvailable?.() && api?.isMatterEnabled?.())
+
+      if (enableMatter && matterAvailable) {
+        try {
+          return new MatterPlatform(log, config, api)
+        } catch (error: any) {
+          log.warn(`Matter platform failed to initialize, falling back to HAP: ${error?.message ?? error}`)
+        }
+      }
+
+      return new HAPPlatform(log, config, api)
+    }
+  }
+}
 
 // Register our platform with homebridge.
 export default (api: API): void => {
-  api.registerPlatform(PLATFORM_NAME, RoombaPlatform)
+  const ProxyCtor = createPlatformProxy(RoombaPlatform, RoombaMatterPlatform)
+  api.registerPlatform(PLUGIN_NAME, PLATFORM_NAME, ProxyCtor as any)
 }

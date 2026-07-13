@@ -1,4 +1,47 @@
+# [3.0.0](https://github.com/homebridge-plugins/homebridge-roomba/compare/v2.1.1...v3.0.0) (2026-05-04)
+
+
+### Bug Fixes
+
+* address review feedback - listener leak, unused vars, import order, configureAccessory no-op ([f917d06](https://github.com/homebridge-plugins/homebridge-roomba/commit/f917d0618ca7ebb48a1793b4c6958b42bd5e9175))
+* American English spelling and JSON indentation in config.schema.json ([6966b56](https://github.com/homebridge-plugins/homebridge-roomba/commit/6966b563d5d467bb8bd873bf2ec3b7388f2d084c))
+
+
+### Features
+
+* add externalAccessory option for HAP and Matter platforms ([bfcbd56](https://github.com/homebridge-plugins/homebridge-roomba/commit/bfcbd5622a39d4028f0502642746e7a3b5212e61))
+* add Homebridge Matter support for Homebridge v2.0 ([1af0013](https://github.com/homebridge-plugins/homebridge-roomba/commit/1af001366b3b73d2fbc15a00f45ddbd107a584ae))
+
+
+
 # Changelog
+
+## [3.0.0](https://github.com/homebridge-plugins/homebridge-roomba/compare/tag/v3.0.0) (2026-05-04)
+
+### Breaking Changes
+
+- Homebridge Matter support is now the default when running on Homebridge v2 with Matter enabled. Roomba devices are registered as `RoboticVacuumCleaner` Matter accessories. Set `enableMatter: false` to keep the existing HAP-only behaviour.
+- Platform files renamed: `platform.ts` → `Platform.HAP.ts`, `matterPlatform.ts` → `Platform.Matter.ts`. Affects contributors and any tooling referencing these paths directly.
+- `preferMatter` config option removed; use `enableMatter` instead.
+
+### Enhancements
+
+- Add Homebridge Matter support for Homebridge v2.0 — Roomba devices are registered as `RoboticVacuumCleaner` Matter accessories when running on Homebridge v2 with Matter enabled. Falls back to HAP automatically when Matter is unavailable or fails to initialize.
+- Add `externalAccessory` config option (platform-level and per-device) to publish Roomba as an independent HomeKit bridge with its own QR code.
+- Add Braava m6 water tank status as a filter maintenance indicator.
+
+### Bug Fixes
+
+- Fix UDP socket leak in Roomba auto-discovery (`getIP`): each retry attempt now properly closes its socket before opening the next one, preventing socket and timer accumulation across failed attempts.
+- Fix Matter cached accessory re-registration on every Homebridge restart: cached (restored) accessories are no longer passed to `registerPlatformAccessories`, which was causing duplicate registration errors.
+- Fix RVC operational state mapping: `charging` now correctly maps to `Charging (65)` instead of `Docked (66)`.
+
+### Dependencies
+
+- Updated all dependencies to latest versions.
+- Migrated from `@karlvr/dorita980` to `dorita980 v4`.
+
+**Full Changelog**: https://github.com/homebridge-plugins/homebridge-roomba/compare/v2.1.0...v3.0.0
 
 ## [2.1.0](https://github.com/homebridge-plugins/homebridge-roomba/releases/tag/v2.1.0) (2025-03-04)
 

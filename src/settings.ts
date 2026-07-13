@@ -17,6 +17,17 @@ export interface RoombaPlatformConfig extends PlatformConfig {
     disableDiscovery?: boolean
     idleWatchInterval?: number
     debug?: boolean
+    /**
+     * Enable Matter support when running on Homebridge v2 with Matter enabled.
+     * Defaults to true.
+     */
+    enableMatter?: boolean
+    /**
+     * Publish all Roomba devices as external accessories (independent HomeKit
+     * bridges) rather than as part of the main Homebridge bridge.
+     * Can be overridden per device.
+     */
+    externalAccessory?: boolean
 }
 
 export interface DeviceConfig extends Robot {
@@ -41,4 +52,10 @@ export interface DeviceConfig extends Robot {
     dockingContactSensor?: boolean
     homeSwitch?: boolean
     tankContactSensor?: boolean
+    /**
+     * Publish this device as an external accessory (independent HomeKit bridge)
+     * rather than part of the main Homebridge bridge. Overrides the platform-
+     * level `externalAccessory` setting for this individual device.
+     */
+    externalAccessory?: boolean
 }
